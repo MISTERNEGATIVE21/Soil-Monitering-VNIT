@@ -29,22 +29,7 @@
     <style>
         .page { display: none; }
         .page.active { display: block; }
-        .modal { display: none; }
-        .modal.active { display: flex; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .spinner {
-            border: 4px solid rgba(0, 0, 0, .1);
-            border-left-color: #2563eb;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-        }
-        .prose { max-width: 65ch; }
-        .prose-sm { font-size: 0.875rem; line-height: 1.5; }
-        .prose strong { font-weight: 600; }
-        .prose em { font-style: italic; }
-        .prose br { content: ""; display: block; margin-bottom: 0.75em; }
+        /* Removed modal and spinner styles */
         .active-nav { color: #2563eb; /* blue-600 */ }
     </style>
 </head>
@@ -134,14 +119,12 @@
                 </div>
             </div>
 
-            <!-- Alerts / Action Feed (Gemini still works) -->
+            <!-- Alerts / Action Feed (Gemini Removed) -->
             <div>
                 <h3 class="font-semibold text-gray-700 mb-2">Action Feed</h3>
                 <div class="space-y-3" id="action-feed-list">
-                    <button id="smart-report-btn" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-3 rounded-lg flex items-center justify-center space-x-2 font-semibold shadow-md hover:shadow-lg transition-all">
-                        <span>✨ Generate Smart Report</span>
-                    </button>
-                    <div id="smart-report-output" class="hidden bg-gray-50 border p-3 rounded-lg text-sm prose prose-sm"></div>
+                    <!-- Gemini Button Removed -->
+                    <!-- Gemini Output Removed -->
                     <div id="weather-insight" class="bg-yellow-100 text-yellow-800 p-3 rounded-lg items-start space-x-3 hidden"></div>
                 </div>
             </div>
@@ -232,7 +215,7 @@
                                     <option>Lettuce</option>
                                     <option>Wheat</option>
                                 </select>
-                                <button id="crop-advice-btn" class="flex-shrink-0 bg-blue-600 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-700">✨ Get Advice</button>
+                                <!-- Gemini Advice Button Removed -->
                             </div>
                         </div>
                     </div>
@@ -258,25 +241,7 @@
 
     </div>
     
-    <!-- Gemini Advice Modal -->
-    <div id="gemini-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
-            <div class="flex justify-between items-center p-4 border-b">
-                <h3 id="gemini-modal-title" class="text-lg font-semibold"></h3>
-                <button id="gemini-modal-close" class="text-gray-400 hover:text-gray-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                </button>
-            </div>
-            <div id="gemini-modal-body" class="p-6">
-                <div id="gemini-modal-loading" class="flex flex-col items-center justify-center space-y-3">
-                    <div class="spinner"></div>
-                    <p class="text-gray-600">Connecting...</p>
-                </div>
-                <div id="gemini-modal-content" class="hidden prose prose-sm max-w-none text-gray-700">
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Gemini Advice Modal Removed -->
 
 
     <!-- Global Navigation Script -->
@@ -303,7 +268,7 @@
     <!-- **** MAIN SCRIPT **** -->
     <script type="module">
         // --- State and Configuration ---
-        let geminiApiIsLoading = false;
+        // let geminiApiIsLoading = false; // REMOVED
         let currentWeatherData = null;
         let historyChart;
         let currentMetric = 'moisture';
@@ -313,7 +278,7 @@
         let dataPollInterval;       // Store the polling interval
         
         // --- !!! WEATHER API KEY (Still needed) !!! ---
-        const OPENWEATHER_API_KEY = 'c7f07be63d991f8089667ce1f9fd79ae';
+        const OPENWEATHER_API_KEY = 'YOUR_OPENWEATHER_API_KEY';
         const WEATHER_LAT = '21.1458'; // Nagpur Latitude
         const WEATHER_LON = '79.0882'; // Nagpur Longitude
         // ---------------------------------
@@ -545,114 +510,10 @@
             insightEl.innerHTML = `<p class="font-semibold text-sm">${title}</p><p class="text-xs">${text}</p>`;
         }
         
-        // --- Gemini API Call Logic ---
-        async function fetchWithBackoff(url, options, retries = 5, delay = 1000) {
-            try {
-                const response = await fetch(url, options);
-                if (!response.ok) {
-                    if (response.status === 429 && retries > 0) {
-                        await new Promise(res => setTimeout(res, delay));
-                        return fetchWithBackoff(url, options, retries - 1, delay * 2);
-                    }
-                    throw new Error(`API Error: ${response.status} ${response.statusText}`);
-                }
-                return response.json();
-            } catch (error) {
-                if (retries > 0) {
-                    await new Promise(res => setTimeout(res, delay));
-                    return fetchWithBackoff(url, options, retries - 1, delay * 2);
-                }
-                throw error;
-            }
-        }
-        async function callGemini(prompt) {
-            if (geminiApiIsLoading) return "AI is already busy. Please try again in a moment.";
-            geminiApiIsLoading = true;
-            const apiKey = ""; // Provided by environment
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-            const payload = { contents: [{ parts: [{ text: prompt }] }] };
-            try {
-                const result = await fetchWithBackoff(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const candidate = result.candidates?.[0];
-                if (candidate && candidate.content?.parts?.[0]?.text) {
-                    return candidate.content.parts[0].text
-                        .replace(/\n/g, '<br>')
-                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                        .replace(/\*(.*?)\*/g, '<em>$1</em>');
-                } else {
-                    return "Error: Could not get a valid response from the AI.";
-                }
-            } catch (error) {
-                return `Error: Could not connect to the AI service. ${error.message}`;
-            } finally {
-                geminiApiIsLoading = false;
-            }
-        }
-        function showGeminiModal(title) {
-            document.getElementById('gemini-modal-title').innerText = title;
-            document.getElementById('gemini-modal-content').innerHTML = '';
-            document.getElementById('gemini-modal-content').classList.add('hidden');
-            document.getElementById('gemini-modal-loading').classList.remove('hidden');
-            document.getElementById('gemini-modal').classList.add('active');
-        }
-        function hideGeminiModal() {
-            document.getElementById('gemini-modal').classList.remove('active');
-        }
-        function displayGeminiResponse(htmlContent) {
-            document.getElementById('gemini-modal-loading').classList.add('hidden');
-            document.getElementById('gemini-modal-content').innerHTML = htmlContent;
-            document.getElementById('gemini-modal-content').classList.remove('hidden');
-        }
-        async function handleSmartReportClick() {
-            const btn = document.getElementById('smart-report-btn');
-            const outputEl = document.getElementById('smart-report-output');
-            btn.disabled = true;
-            outputEl.classList.remove('hidden');
-            outputEl.innerHTML = 'Gathering data and consulting AI...';
-            const moisture = liveDataStore.moisture.length ? liveDataStore.moisture.slice(-1)[0].y : null;
-            const nitrogen = staticDataStore.n.slice(-1)[0]?.y;
-            const phosphorus = staticDataStore.p.slice(-1)[0]?.y;
-            const potassium = staticDataStore.k.slice(-1)[0]?.y;
-            const ambTemp = liveDataStore.temperature.length ? liveDataStore.temperature.slice(-1)[0].y : null;
-            const humidity = liveDataStore.humidity.length ? liveDataStore.humidity.slice(-1)[0].y : null;
-            // const soilTemp = liveDataStore.soil_temperature.length ? liveDataStore.soil_temperature.slice(-1)[0].y : null; // REMOVED
-            let weatherPrompt = "Weather data is not available.";
-            if (currentWeatherData) {
-                weatherPrompt = `The weather forecast for today is: ${currentWeatherData.current.temp.toFixed(0)}°C, ${currentWeatherData.current.weather[0].description}, with a ${currentWeatherData.todayForecast.pop * 100}% chance of rain.`;
-            }
-            const prompt = `
-                Act as an expert agronomist. Here is the current data from my "Farm Plot 1":
-                - Soil Moisture: ${moisture ? moisture.toFixed(1) + '%' : 'N/A'}
-                - Nitrogen (N): ${nitrogen ? nitrogen.toFixed(1) + ' ppm' : 'N/A'}
-                - Phosphorus (P): ${phosphorus ? phosphorus.toFixed(1) + ' ppm' : 'N/A'}
-                - Potassium (K): ${potassium ? potassium.toFixed(1) + ' ppm' : 'N/A'}
-                - Ambient Temperature: ${ambTemp ? ambTemp.toFixed(1) + '°C' : 'N/A'}
-                - Ambient Humidity: ${humidity ? humidity.toFixed(1) + '%' : 'N/A'}
-                - ${weatherPrompt}
-                Please provide a brief, actionable summary (under 100 words) for my "Action Feed".
-                1. Start with a one-sentence overview.
-                2. List 2-3 bullet points of the most important actions.
-            `;
-            const response = await callGemini(prompt);
-            outputEl.innerHTML = response;
-            btn.disabled = false;
-        }
-        async function handleCropAdviceClick() {
-            const cropType = document.getElementById('crop-type').value;
-            showGeminiModal(`Advice for ${cropType}`);
-            const prompt = `
-                Act as an expert agromonist for a small-scale farmer. The farmer is growing ${cropType}.
-                Provide clear, concise advice in two parts:
-                1.  **Ideal Ranges:** List the ideal ranges for Soil Moisture (%), Ambient Temperature (°C), Nitrogen (ppm), Phosphorus (ppm), and Potassium (ppm) for this crop. (Do not include Soil Temperature).
-                2.  **General Advice:** Provide 2-3 short, actionable tips for growing ${cropType}, especially related to soil health and watering.
-            `;
-            const response = await callGemini(prompt);
-            displayGeminiResponse(response);
-        }
+        // --- Gemini API Call Logic (REMOVED) ---
+        // ...
+        // ... all gemini functions removed
+        // ...
 
         // --- *** ESP32 Data Fetching *** ---
         
@@ -732,11 +593,14 @@
         
         function handleSaveIp() {
             const ipInput = document.getElementById('esp32-ip');
+            const saveBtn = document.getElementById('save-ip-btn');
             let ip = ipInput.value.trim();
+            
             // Ensure it starts with http://
-            if (ip && !ip.startsWith('http://') && !ip.startsWith('httpsIA://')) { // Typo fix
+            if (ip && !ip.startsWith('http://') && !ip.startsWith('https://')) {
                  ip = `http://${ip}`;
             }
+
             if (ip) {
                 esp32IpAddress = ip;
                 localStorage.setItem('esp32IpAddress', ip); // Save to local storage
@@ -744,23 +608,33 @@
                 console.log("Saved ESP32 IP:", ip);
                 startPolling(); // Start polling with the new IP
                 
-                // Use a simple custom modal for the alert
-                showGeminiModal("Settings Saved");
-                displayGeminiResponse("IP Address Saved. Fetching data...");
-                // Find a way to close modal after a delay
-                setTimeout(hideGeminiModal, 2000);
+                // Simple button feedback instead of modal
+                saveBtn.innerText = "Saved!";
+                saveBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                saveBtn.classList.add('bg-green-600');
+                setTimeout(() => {
+                    saveBtn.innerText = "Save";
+                    saveBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                    saveBtn.classList.remove('bg-green-600');
+                }, 2000);
 
             } else {
-                // Use a simple custom modal for the alert
-                showGeminiModal("Error");
-                displayGeminiResponse("Please enter a valid IP address.");
+                // Simple button feedback for error
+                saveBtn.innerText = "Error! Invalid IP";
+                saveBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                saveBtn.classList.add('bg-red-600');
+                setTimeout(() => {
+                    saveBtn.innerText = "Save";
+                    saveBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                    saveBtn.classList.remove('bg-red-600');
+                }, 2000);
             }
         }
         
         
         // --- Weather API Logic ---
         async function fetchWeatherData() {
-            if (OPENWEATHER_API_KEY === 'YOUR_OPENWEATHER_API_KEY') {
+            if (OPENWEATHER_API_KEY === 'c7f07be63d991f8089667ce1f9fd79ae') {
                 console.warn("OpenWeather API Key is not set. Skipping weather fetch.");
                 document.getElementById('weather-desc').innerText = "Set API Key";
                 document.getElementById('weather-location').innerText = "Weather (No API Key)";
@@ -857,10 +731,8 @@
                 }
             });
 
-            // Gemini Listeners
-            document.getElementById('smart-report-btn').addEventListener('click', handleSmartReportClick);
-            document.getElementById('crop-advice-btn').addEventListener('click', handleCropAdviceClick);
-            document.getElementById('gemini-modal-close').addEventListener('click', hideGeminiModal);
+            // Gemini Listeners (REMOVED)
+            // ...
             
             // --- NEW: Settings Page Listener ---
             document.getElementById('save-ip-btn').addEventListener('click', handleSaveIp);
