@@ -50,21 +50,21 @@
 
                 <!-- Critical Metrics Cards -->
                 <div class="grid grid-cols-2 gap-4 mb-6">
-                    <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg cursor-pointer" onclick="navigateToHistory('moisture')">
+                    <div data-metric="moisture" class="bg-blue-50 border border-blue-200 p-4 rounded-lg cursor-pointer history-link">
                         <div class="flex items-center space-x-2 mb-2">
-                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-blue-600"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
-                            <h3 class="font-semibold text-gray-700">Moisture</h3>
+                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-blue-600 pointer-events-none"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+                            <h3 class="font-semibold text-gray-700 pointer-events-none">Moisture</h3>
                         </div>
-                        <p class="text-3xl font-bold text-gray-900">58<span class="text-xl">%</span></p>
-                        <p class="text-sm text-green-600 font-medium">Healthy</p>
+                        <p class="text-3xl font-bold text-gray-900 pointer-events-none">58<span class="text-xl">%</span></p>
+                        <p class="text-sm text-green-600 font-medium pointer-events-none">Healthy</p>
                     </div>
-                    <div class="bg-green-50 border border-green-200 p-4 rounded-lg cursor-pointer" onclick="navigateToHistory('n')">
+                    <div data-metric="n" class="bg-green-50 border border-green-200 p-4 rounded-lg cursor-pointer history-link">
                         <div class="flex items-center space-x-2 mb-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-green-600"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
-                            <h3 class="font-semibold text-gray-700">NPK Status</h3>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-green-600 pointer-events-none"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+                            <h3 class="font-semibold text-gray-700 pointer-events-none">NPK Status</h3>
                         </div>
-                        <p class="text-3xl font-bold text-gray-900">Good</p>
-                        <p class="text-sm text-green-600 font-medium">Optimal</p>
+                        <p class="text-3xl font-bold text-gray-900 pointer-events-none">Good</p>
+                        <p class="text-sm text-green-600 font-medium pointer-events-none">Optimal</p>
                     </div>
                 </div>
 
@@ -118,7 +118,7 @@
                     </div>
                      <!-- Weather Forecast -->
                     <div>
-                        <h3 class="font-semibold text-gray-700 mb-2">Weather (Nagpur)</h3>
+                        <h3 class="font-semibold text-gray-700 mb-2" id="weather-location">Weather</h3>
                          <div class="bg-indigo-50 border border-indigo-200 p-3 rounded-lg text-center h-full flex flex-col justify-center">
                             <img id="weather-icon" src="https://placehold.co/40x40/9fa8da/9fa8da?text=..." class="w-10 h-10 mx-auto mb-1 rounded-full" alt="Weather icon">
                              <p id="weather-temp" class="font-bold text-lg">--°C</p>
@@ -153,7 +153,7 @@
             <!-- ====== History Page ====== -->
             <div id="history-page" class="page">
                  <header class="flex items-center mb-4">
-                    <button onclick="navigateTo('dashboard-page')" class="p-2 -ml-2">
+                    <button id="history-back-btn" class="p-2 -ml-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="m15 18-6-6 6-6"/></svg>
                     </button>
                     <h1 class="text-xl font-bold text-gray-900 ml-2">History & Trends</h1>
@@ -278,21 +278,47 @@
 
         <!-- Bottom Navigation Bar -->
         <nav class="fixed bottom-0 left-0 right-0 max-w-lg mx-auto bg-white border-t border-gray-200 flex justify-around">
-            <button onclick="navigateTo('dashboard-page')" class="nav-btn flex-1 flex flex-col items-center justify-center p-3 text-gray-500 active-nav" data-page="dashboard-page">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 mb-1"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                <span class="text-xs font-medium">Dashboard</span>
+            <button class="nav-btn flex-1 flex flex-col items-center justify-center p-3 text-gray-500 active-nav" data-page="dashboard-page">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 mb-1 pointer-events-none"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                <span class="text-xs font-medium pointer-events-none">Dashboard</span>
             </button>
-            <button onclick="navigateTo('history-page')" class="nav-btn flex-1 flex flex-col items-center justify-center p-3 text-gray-500" data-page="history-page">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 mb-1"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-                <span class="text-xs font-medium">History</span>
+            <button class="nav-btn flex-1 flex flex-col items-center justify-center p-3 text-gray-500" data-page="history-page">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 mb-1 pointer-events-none"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                <span class="text-xs font-medium pointer-events-none">History</span>
             </button>
-            <button onclick="navigateTo('settings-page')" class="nav-btn flex-1 flex flex-col items-center justify-center p-3 text-gray-500" data-page="settings-page">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 mb-1"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15-.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
-                <span class="text-xs font-medium">Settings</span>
+            <button class="nav-btn flex-1 flex flex-col items-center justify-center p-3 text-gray-500" data-page="settings-page">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 mb-1 pointer-events-none"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15-.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                <span class="text-xs font-medium pointer-events-none">Settings</span>
             </button>
         </nav>
 
     </div>
+
+    <!-- 
+      FIX: Placed navigation functions in a separate, standard <script> tag 
+      to ensure they are in the global scope and accessible by all event listeners.
+    -->
+    <script>
+        function navigateTo(pageId) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.toggle('active-nav', btn.dataset.page === pageId);
+            });
+        }
+        
+        function navigateToHistory(metric) {
+            navigateTo('history-page');
+            // Dispatch a custom event that the module script can listen for
+            // to update the chart with the correct metric.
+            const event = new CustomEvent('navigateToHistory', { 
+                detail: { metric } 
+            });
+            window.dispatchEvent(event);
+        }
+    </script>
+
 
     <script type="module">
         // Import Firebase
@@ -325,19 +351,9 @@
         };
 
         // --- Navigation ---
-        function navigateTo(pageId) {
-            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.toggle('active-nav', btn.dataset.page === pageId);
-            });
-        }
-        
-        function navigateToHistory(metric) {
-            navigateTo('history-page');
-            updateChart(metric, currentTimeFrame);
-        }
+        // The global navigateTo() and navigateToHistory() functions are now
+        // in their own <script> tag above. The module script will listen
+        // for the 'navigateToHistory' custom event.
         
         // --- Chart & Data Logic ---
 
@@ -441,20 +457,43 @@
 
         function updateInsight() {
             let data;
+            const config = chartConfig[currentMetric]; // Get config
+            
             if (currentMetric === 'temperature' || currentMetric === 'humidity' || currentMetric === 'soil_temperature') {
                 data = liveDataStore[currentMetric].slice(-currentTimeFrame);
             } else {
                 data = staticDataStore[currentMetric].slice(-currentTimeFrame);
             }
+            
+            const insightEl = document.getElementById('history-insight'); // Get element
 
             if (data.length < 2) {
-                 const insightEl = document.getElementById('history-insight');
                  insightEl.innerHTML = `<p class="font-semibold text-sm">Waiting for data</p><p class="text-xs">Not enough data to show trends. Ensure your ESP32 is sending data.</p>`;
                 return;
             }
             
+            // --- FIX: Logic was missing from here ---
             const firstVal = data[0].y;
+            const lastVal = data[data.length - 1].y;
+            const change = lastVal - firstVal;
+            const trend = change > 0.1 ? "increasing" : (change < -0.1 ? "decreasing" : "stable");
+            const optimalRange = config.range;
 
+            let title = `${config.label} Trend`;
+            let text = `${config.label} has been ${trend} from ${firstVal.toFixed(1)} to ${lastVal.toFixed(1)} ${config.unit} over the last ${currentTimeFrame} days.`;
+
+            if (lastVal < optimalRange[0]) {
+                title = `${config.label} is Low`;
+                text += ` The current level is below the optimal range of ${optimalRange[0]} ${config.unit}.`;
+            } else if (lastVal > optimalRange[1]) {
+                title = `${config.label} is High`;
+                text += ` The current level is above the optimal range of ${optimalRange[1]} ${config.unit}.`;
+            } else {
+                title = `${config.label} is Optimal`;
+                text += ` The current level is within the optimal range (${optimalRange[0]}-${optimalRange[1]} ${config.unit}).`;
+            }
+            // --- END OF FIX ---
+            
             insightEl.innerHTML = `<p class="font-semibold text-sm">${title}</p><p class="text-xs">${text}</p>`;
         }
 
@@ -602,6 +641,7 @@
             if (OPENWEATHER_API_KEY === 'YOUR_OPENWEATHER_API_KEY') {
                 console.warn("OpenWeather API Key is not set. Skipping weather fetch.");
                 document.getElementById('weather-desc').innerText = "Set API Key";
+                document.getElementById('weather-location').innerText = "Weather (No API Key)";
                 return;
             }
 
@@ -615,6 +655,10 @@
                 }
                 const data = await response.json();
                 console.log("Weather data fetched:", data);
+
+                // Update location title dynamically from API timezone data
+                const locationName = data.timezone ? data.timezone.split('/').pop().replace('_', ' ') : "Loading...";
+                document.getElementById('weather-location').innerText = `Weather (${locationName})`;
 
                 // Update Dashboard Weather Card
                 const current = data.current;
@@ -633,6 +677,7 @@
             } catch (error) {
                 console.error("Failed to fetch weather data:", error);
                 document.getElementById('weather-desc').innerText = "API Error";
+                document.getElementById('weather-location').innerText = "Weather (Error)";
             }
         }
         
@@ -744,9 +789,40 @@
                 }
             });
 
+            // --- Navigation Listeners ---
+            
+            // Listen for the custom event from the global navigateToHistory()
+            window.addEventListener('navigateToHistory', (e) => {
+                if (e.detail && e.detail.metric) {
+                    // Call updateChart with the metric from the event
+                    // and the currentTimeFrame from this module's scope
+                    updateChart(e.detail.metric, currentTimeFrame);
+                }
+            });
+
+            // Bottom Nav
+            document.querySelector('nav').addEventListener('click', (e) => {
+                const navBtn = e.target.closest('.nav-btn');
+                if (navBtn) {
+                    navigateTo(navBtn.dataset.page); // Calls global function
+                }
+            });
+            
+            // Dashboard cards
+            document.querySelectorAll('.history-link').forEach(card => {
+                card.addEventListener('click', () => {
+                    navigateToHistory(card.dataset.metric); // Calls global function
+                });
+            });
+            
+            // History back button
+            document.getElementById('history-back-btn').addEventListener('click', () => {
+                navigateTo('dashboard-page'); // Calls global function
+            });
+
             // Initial load
             updateChart('moisture', 7);
-            navigateTo('dashboard-page');
+            navigateTo('dashboard-page'); // Calls global function
         });
     </script>
 </body>
